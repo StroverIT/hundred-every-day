@@ -7,6 +7,7 @@ import { signIn, getSession } from "next-auth/react";
 
 import { AiFillFacebook } from "react-icons/ai";
 import { usePathname, useRouter } from "next/navigation";
+import { FaGoogle } from "react-icons/fa";
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function Login() {
   const [isFound, setIsFound] = useState(true);
   const [isLoading, setLoader] = useState(false);
   const [facebookLoading, setFacebookLoadin] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const facebookHandler = async (e: any) => {
     setFacebookLoadin(true);
@@ -28,6 +30,15 @@ export default function Login() {
 
     setFacebookLoadin(false);
   };
+
+  const googleHandler = async (e: any) => {
+    setGoogleLoading(true);
+
+    await signIn("google");
+
+    setGoogleLoading(false);
+  };
+
   async function submitHandler(e: any) {
     e.preventDefault();
     setLoader(true);
@@ -111,6 +122,25 @@ export default function Login() {
                   </div>
                   <div className="flex items-center justify-center pl-2">
                     Вход с Facebook
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
+          <section className="mt-12 cursor-pointer md:mx-12">
+            <div
+              className="bg-[#4267b2]  text-white  px-8 py-2 rounded-md flex-center"
+              onClick={googleHandler}
+            >
+              {googleLoading ? (
+                <div className="loader"> </div>
+              ) : (
+                <>
+                  <div className="text-3xl ">
+                  <FaGoogle />
+                  </div>
+                  <div className="flex items-center justify-center pl-2">
+                    Вход с Google
                   </div>
                 </>
               )}

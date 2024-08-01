@@ -119,39 +119,33 @@ const options = {
         // For example several OAuth providers do not return email by default.
         // Depending on your provider, will have tokens like `access_token`, `id_token` and or `refresh_token`
         try {
-          let user;
-
           await connectMongo();
-          const result = await User.findOne({
+          let result = await User.findOne({
             email: profile.email,
-          }) as UserSchemaType;
-          
-          user = result;
+          });
 
           if (!result) {
-            user = await User.create({
+            result = await User.create({
               fullName: profile.name,
               email: profile.email,
               isSocialMedia: true,
+              password: 123,
             });
           }
-          if (result && !result?.isSocialMedia) {
+
+          if (result && !result.isSocialMedia) {
             return {
-              id: user.id,
-              email: user.email,
-              name: user.fullName,
-              image: profile.picture,
-              _id: user?._id?.toString(),
+              id: "Error: И-мейла съществува",
+              email:
+                "Error: И-мейла е регистриран. Свържете се с нас за повече информация",
             };
           }
-
           return {
-            id: user._id,
+            id: result.id,
             name: profile.name,
             email: profile.email,
             image: profile.picture,
-            _id: user?._id?.toString(),
-
+            _id: result.id
           };
         } catch (e) {
           console.log(e);
