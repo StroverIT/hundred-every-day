@@ -1,7 +1,7 @@
-import { IUser } from "@/types/UserType";
+import { UserSchemaType } from "@/types/schemas/UserTypes";
 import { Schema, model, models, Model } from "mongoose";
 
-const userScheme = new Schema<IUser>({
+const userScheme = new Schema<UserSchemaType>({
   fullName: {
     type: String,
     required: true,
@@ -26,6 +26,6 @@ const userScheme = new Schema<IUser>({
   },
 });
 
-const User = (models.User as Model<IUser>) || model<IUser>("User", userScheme);
+const User = (models.User as Model<UserSchemaType>) || model<UserSchemaType>("User", userScheme);
 
 export default User;
