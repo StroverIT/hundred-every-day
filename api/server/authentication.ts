@@ -6,7 +6,6 @@ export async function register(
   inputs: TInputsData,
  
 ) {
-
   try {
     // Fetching data to the server
     const url = `${process.env.NEXT_PUBLIC_HOSTNAME}/api/auth/register`;
