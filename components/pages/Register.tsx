@@ -7,6 +7,7 @@ import { signIn, getSession } from "next-auth/react";
 
 import { AiFillFacebook } from "react-icons/ai";
 import { usePathname, useRouter } from "next/navigation";
+import { register } from "@/API/server/authentication";
 
 export default function Register() {
   const router = useRouter();
@@ -27,34 +28,26 @@ export default function Register() {
     setLoading(true);
     if (errorMessages.length > 0) return;
     //POST form values
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(inputs),
-    });
+    // @ts-ignore
+    const res = await register(inputs)
 
     //Await for data for any desirable next steps
-    if (res.status != 201) {
-      const data = await res.json();
-      // @ts-ignore
-      setErrorMessages([...data.map((e) => e)]);
-      setLoading(false);
-      return;
+    if(res.message){
+    await signIn("credentials", {
+        redirect: false,
+        email: inputs.email,
+        password: inputs.password,
+      });
     }
-    const status = await signIn("credentials", {
-      redirect: false,
-      ...inputs,
-    });
+    
 
     // @ts-ignore
-    if (status.error) {
+    if (res.errors) {
       // @ts-ignore
-      setErrMess(status.error);
-      // @ts-ignore
-      setLoader(false);
+      setErrorMessages(res.errors);
     }
+    setLoading(false);
+
 
     router.refresh();
     router.replace(pathname);

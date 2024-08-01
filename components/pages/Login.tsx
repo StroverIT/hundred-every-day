@@ -34,10 +34,13 @@ export default function Login() {
 
     const status = await signIn("credentials", {
       redirect: false,
-      ...loginInputs,
+      email: loginInputs.email,
+      password: loginInputs.password
     });
     // @ts-ignore
     if (status.error) {
+      // @ts-ignore
+      console.log(status);
       // @ts-ignore
       toastError(status.error);
       setLoader(false);

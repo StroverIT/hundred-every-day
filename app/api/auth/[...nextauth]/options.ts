@@ -48,13 +48,11 @@ const options = {
         }) as UserSchemaType;
 
         if (user.password == null) return null;
-
+        
         const checkPassword = await compare(
           (credentials as { password: string })?.password ?? "",
-          // @ts-ignore
           user.password
         );
-
         if (user && checkPassword) {
           return {
             name: user.fullName,

@@ -12,10 +12,10 @@ export async function POST(req: Request) {
     //Only POST mothod is accepted
     if (req.method === "POST") {
       const data = await req.json();
-      const { email, password, fullName, gender } = data;
+      const { email, password, fullName } = data;
 
       await connectMongo();
-      const checkExisting = await User.findOne({ email: email.value });
+      const checkExisting = await User.findOne({ email });
 
       if (checkExisting)
         return NextResponse.json({
@@ -23,10 +23,9 @@ export async function POST(req: Request) {
         });
 
       const user = await User.create({
-        email: email.value,
-        password: await hash(password.value || "", 12), // Ensure password is always a string
-        fullName: fullName.value,
-        gender,
+        email: email,
+        password: await hash(password, 12), // Ensure password is always a string
+        fullName: "no-name",
       });
 
       return NextResponse.json({
