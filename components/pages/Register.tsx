@@ -3,7 +3,7 @@ import { useState } from "react";
 import ColorInput from "@/components/generic/ColorInput/ColorInput";
 
 import { signIn } from "next-auth/react";
-import { register } from "@/API/server/authentication";
+import { register } from "../../API/server/authentication";
 
 import { usePathname, useRouter } from "next/navigation";
 
