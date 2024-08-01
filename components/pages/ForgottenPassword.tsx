@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react";
-import ColorInput from "@/components/ColorInput";
+import ColorInput from "@/components/generic/ColorInput/ColorInput";
 
 import { toastError, toastSuccess } from "@/components/notifications/Toast";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ export default function ForgottenPassword() {
   const [isFound, setIsFound] = useState(true);
   const [isLoading, setLoader] = useState(false);
 
-  async function submitHandler(e) {
+  async function submitHandler(e: any) {
     e.preventDefault();
     setLoader(true);
 

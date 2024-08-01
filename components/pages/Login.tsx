@@ -1,6 +1,6 @@
-"use client"
+"use client";
 import { useState } from "react";
-import ColorInput from "@/components/ColorInput";
+import ColorInput from "@/components/generic/ColorInput/ColorInput";
 
 import { toastError } from "@/components/notifications/Toast";
 import { signIn, getSession } from "next-auth/react";
@@ -10,7 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 export default function Login() {
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const [loginInputs, setLoginInputs] = useState({
     email: "",
@@ -21,14 +21,14 @@ export default function Login() {
   const [isLoading, setLoader] = useState(false);
   const [facebookLoading, setFacebookLoadin] = useState(false);
 
-  const facebookHandler = async (e) => {
+  const facebookHandler = async (e: any) => {
     setFacebookLoadin(true);
 
     await signIn("facebook");
 
     setFacebookLoadin(false);
   };
-  async function submitHandler(e) {
+  async function submitHandler(e: any) {
     e.preventDefault();
     setLoader(true);
 
@@ -36,16 +36,18 @@ export default function Login() {
       redirect: false,
       ...loginInputs,
     });
+    // @ts-ignore
     if (status.error) {
+      // @ts-ignore
       toastError(status.error);
       setLoader(false);
     }
 
-    router.refresh()
+    router.refresh();
     router.replace(pathname);
   }
 
-  const inputsHandler = (e) => {
+  const inputsHandler = (e: any) => {
     setLoginInputs((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,

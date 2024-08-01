@@ -1,3 +1,5 @@
+import { ColorInputProps } from "./types";
+
 const ColorInput = ({
   labelName,
   isLoading = false,
@@ -10,7 +12,7 @@ const ColorInput = ({
   onClick,
   type = "text",
   isBtn = true,
-}) => {
+}: ColorInputProps) => {
   return (
     <>
       <div className="mb-4">

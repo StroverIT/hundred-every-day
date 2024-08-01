@@ -27,6 +27,7 @@ export default function Index({ token }: { token: any }) {
     type
   ) => {
     await updateTraining(token, dateInput, type, incrementValue);
+    // @ts-ignore
     setTraining((prev) => ({ ...prev, [type]: prev[type] + incrementValue }));
   };
 

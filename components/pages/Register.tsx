@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import ColorInput from "@/components/ColorInput";
+import ColorInput from "@/components/generic/ColorInput/ColorInput";
 
 import { toastError } from "@/components/notifications/Toast";
 import { signIn, getSession } from "next-auth/react";
@@ -22,7 +22,7 @@ export default function Register() {
   const [isLoading, setLoading] = useState(false);
   const [errorMessages, setErrorMessages] = useState([]);
 
-  const submitHandler = async (e) => {
+  const submitHandler = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     if (errorMessages.length > 0) return;
@@ -38,6 +38,7 @@ export default function Register() {
     //Await for data for any desirable next steps
     if (res.status != 201) {
       const data = await res.json();
+      // @ts-ignore
       setErrorMessages([...data.map((e) => e)]);
       setLoading(false);
       return;
@@ -47,8 +48,11 @@ export default function Register() {
       ...inputs,
     });
 
+    // @ts-ignore
     if (status.error) {
+      // @ts-ignore
       setErrMess(status.error);
+      // @ts-ignore
       setLoader(false);
     }
 
@@ -56,7 +60,7 @@ export default function Register() {
     router.replace(pathname);
   };
 
-  const inputsHandler = (e) => {
+  const inputsHandler = (e: any) => {
     setInputs((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,

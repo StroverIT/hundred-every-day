@@ -1,6 +1,5 @@
 import { useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
-import getDate from "../lib/getDate";
 import moment from "moment";
 
 const options = {
@@ -30,14 +29,18 @@ const options = {
   language: "bg",
 };
 
-const DatePickerComp = ({ setDateInput }) => {
+const DatePickerComp = ({
+  setDateInput,
+}: {
+  setDateInput: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   const [show, setShow] = useState(false);
-  const handleChange = (selectedDate) => {
+  const handleChange = (selectedDate: Date) => {
     const date = moment(selectedDate).format("YYYY-MM-DD");
 
     setDateInput(date);
   };
-  const handleClose = (state) => {
+  const handleClose = (state: boolean) => {
     setShow(state);
   };
 
