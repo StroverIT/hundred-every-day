@@ -8,6 +8,7 @@ import { connectMongo } from "@/db/connectDb";
 
 import { compare } from "bcryptjs";
 import User from "@/db/models/User";
+import { UserSchemaType } from "@/types/schemas/UserTypes";
 
 const options = {
   session: {
@@ -44,14 +45,12 @@ const options = {
 
         const user = await User.findOne({
           email: (credentials as { email: string })?.email,
-        });
+        }) as UserSchemaType;
 
-        // @ts-ignore
         if (user.password == null) return null;
 
         const checkPassword = await compare(
           (credentials as { password: string })?.password ?? "",
-          // @ts-ignore
           user.password
         );
 
@@ -60,9 +59,7 @@ const options = {
             name: user.fullName,
             email: user.email,
             image: "",
-            gender: user?.gender,
             _id: user?._id?.toString(),
-            role: user?.role,
           };
         } else {
           return null;
@@ -103,7 +100,6 @@ const options = {
             name: profile.name,
             email: profile.email,
             image: profile.picture,
-            gender: result?.gender,
           };
         } catch (e) {
           console.log(e);
@@ -127,7 +123,7 @@ const options = {
           await connectMongo();
           const result = await User.findOne({
             email: profile.email,
-          });
+          }) as UserSchemaType;
           user = result;
 
           if (!result) {
@@ -139,16 +135,11 @@ const options = {
           }
           if (result && !result?.isSocialMedia) {
             return {
-              // @ts-ignore
-              id: user.id,
-              // @ts-ignore
+              id: user._id,
               email: user.email,
-              // @ts-ignore
               name: user.fullName,
               image: profile.picture,
-              gender: user?.gender,
               _id: user?._id?.toString(),
-              role: user?.role,
             };
           }
 
@@ -158,9 +149,7 @@ const options = {
             name: profile.name,
             email: profile.email,
             image: profile.picture,
-            gender: user?.gender,
             _id: user?._id?.toString(),
-            role: user?.role
 
           };
         } catch (e) {
