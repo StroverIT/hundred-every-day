@@ -5,11 +5,13 @@ import Index from "@/components/pages/account/Index";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
+  //@ts-ignore
   const session = await getServerSession(options);
 
   if (!session) {
     redirect("/");
   }
-
-  return <Index />;
+  
+  //@ts-ignore
+  return <Index token={session?.token} />;
 }

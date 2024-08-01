@@ -1,6 +1,6 @@
-export enum Roles  {
+export enum Roles {
   admin = "admin",
-  user = "user"
+  user = "user",
 }
 
 export type UserSchemaType = {
@@ -10,4 +10,5 @@ export type UserSchemaType = {
   createdAt: Date;
   isSocialMedia: boolean;
   _id?: string;
+  id?: string;
 };

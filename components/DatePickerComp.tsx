@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DatePicker from "tailwind-datepicker-react";
 import getDate from "../lib/getDate";
+import moment from "moment";
 
 const options = {
   title: "Demo Title",
@@ -21,7 +22,6 @@ const options = {
     selected: "",
   },
   icons: {
-    // () => ReactNode | JSX.Element
     prev: () => <span>Минал</span>,
     next: () => <span>Следващ</span>,
   },
@@ -33,7 +33,7 @@ const options = {
 const DatePickerComp = ({ setDateInput }) => {
   const [show, setShow] = useState(false);
   const handleChange = (selectedDate) => {
-    const date = getDate(selectedDate);
+    const date = moment(selectedDate).format("YYYY-MM-DD");
 
     setDateInput(date);
   };
@@ -42,7 +42,7 @@ const DatePickerComp = ({ setDateInput }) => {
   };
 
   return (
-    <div>
+    <div className="relative h-10">
       <DatePicker
         options={options}
         onChange={handleChange}

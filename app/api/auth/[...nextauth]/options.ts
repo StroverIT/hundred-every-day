@@ -51,6 +51,7 @@ const options = {
 
         const checkPassword = await compare(
           (credentials as { password: string })?.password ?? "",
+          // @ts-ignore
           user.password
         );
 
@@ -76,11 +77,12 @@ const options = {
         // Depending on your provider, will have tokens like `access_token`, `id_token` and or `refresh_token`
         try {
           await connectMongo();
-          const result = await User.findOne({
+          let result = await User.findOne({
             email: profile.email,
           });
+
           if (!result) {
-            await User.create({
+            result = await User.create({
               fullName: profile.name,
               email: profile.email,
               isSocialMedia: true,
@@ -96,10 +98,11 @@ const options = {
             };
           }
           return {
-            id: profile.id,
+            id: result.id,
             name: profile.name,
             email: profile.email,
             image: profile.picture,
+            _id: result.id
           };
         } catch (e) {
           console.log(e);
@@ -124,6 +127,7 @@ const options = {
           const result = await User.findOne({
             email: profile.email,
           }) as UserSchemaType;
+          
           user = result;
 
           if (!result) {
@@ -135,7 +139,7 @@ const options = {
           }
           if (result && !result?.isSocialMedia) {
             return {
-              id: user._id,
+              id: user.id,
               email: user.email,
               name: user.fullName,
               image: profile.picture,
@@ -144,7 +148,6 @@ const options = {
           }
 
           return {
-            // @ts-ignore
             id: user._id,
             name: profile.name,
             email: profile.email,

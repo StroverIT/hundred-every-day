@@ -1,9 +1,71 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useState } from "react";
+import DatePicker from "@/components/DatePickerComp";
+import { getTraining, updateTraining } from "@/API/server/training";
+import moment from "moment";
+import {
+  TrainingSchemaType,
+  TypeOfExercise,
+} from "@/types/schemas/TrainingTypes";
+import IncrementTypeOfTraining from "@/components/training/IncrementTypeOfTraining/IncrementTypeOfTraining";
+import { IncrementHandlerType } from "@/components/training/IncrementTypeOfTraining/types";
 
-export default function Index() {
+export default function Index({ token }: { token: any }) {
+  const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
+  const [training, setTraining] = useState<TrainingSchemaType | null>(null);
+
+  useEffect(() => {
+    const initial = async () => {
+      const res = await getTraining(token, dateInput);
+      setTraining(res);
+    };
+    initial();
+  }, [dateInput]);
+
+  const incrementHandler: IncrementHandlerType = async (
+    incrementValue,
+    type
+  ) => {
+    await updateTraining(token, dateInput, type, incrementValue);
+    setTraining((prev) => ({ ...prev, [type]: prev[type] + incrementValue }));
+  };
+
+  if (!training) return <div>Loading...</div>;
+
   return (
-    <div>
-      
+    <div className="container">
+      <DatePicker setDateInput={setDateInput} />
+      <div className="mt-4">
+        <section className="flex flex-col gap-y-4 ">
+          <article>
+            <h2 className="text-3xl font-bold">Push Ups: {training?.pushUps}</h2>
+            <IncrementTypeOfTraining
+              type={TypeOfExercise.pushUps}
+              maxReps={training.totalNumberOfReps}
+              currentReps={training.pushUps}
+              incrementHandler={incrementHandler}
+            />
+          </article>
+          <article>
+            <h2 className="text-3xl font-bold">Sit Ups: {training.sitUps}</h2>
+            <IncrementTypeOfTraining
+              currentReps={training.sitUps}
+              maxReps={training.totalNumberOfReps}
+              type={TypeOfExercise.sitUps}
+              incrementHandler={incrementHandler}
+            />
+          </article>
+          <article>
+            <h2 className="text-3xl font-bold">Crunches: {training.crunches}</h2>
+            <IncrementTypeOfTraining
+              currentReps={training.crunches}
+              maxReps={training.totalNumberOfReps}
+              type={TypeOfExercise.crunches}
+              incrementHandler={incrementHandler}
+            />
+          </article>
+        </section>
+      </div>
     </div>
-  )
+  );
 }
