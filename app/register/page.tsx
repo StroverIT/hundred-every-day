@@ -1,7 +1,7 @@
-import Login from "@/components/pages/Login";
 import { getServerSession } from "next-auth";
 import options from "@/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
+import Register from "@/components/pages/Register";
 export const dynamic = "force-dynamic"
 
 export default async function Page() {
@@ -12,6 +12,6 @@ export default async function Page() {
   }
   
   return (
-   <Login/>
+   <Register/>
   )
 }
