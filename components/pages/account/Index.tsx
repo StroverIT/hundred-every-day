@@ -39,7 +39,7 @@ export default function Index({ token }: { token: any }) {
       <div className="mt-4">
         <section className="flex flex-col gap-y-4 ">
           <article>
-            <h2 className="text-3xl font-bold">Push Ups: {training?.pushUps}</h2>
+            <h2 className="text-3xl font-bold">Push Ups: {training?.pushUps} / {training.totalNumberOfReps}</h2>
             <IncrementTypeOfTraining
               type={TypeOfExercise.pushUps}
               maxReps={training.totalNumberOfReps}
@@ -48,7 +48,7 @@ export default function Index({ token }: { token: any }) {
             />
           </article>
           <article>
-            <h2 className="text-3xl font-bold">Sit Ups: {training.sitUps}</h2>
+            <h2 className="text-3xl font-bold">Sit Ups: {training.sitUps} / {training.totalNumberOfReps}</h2>
             <IncrementTypeOfTraining
               currentReps={training.sitUps}
               maxReps={training.totalNumberOfReps}
@@ -57,7 +57,7 @@ export default function Index({ token }: { token: any }) {
             />
           </article>
           <article>
-            <h2 className="text-3xl font-bold">Crunches: {training.crunches}</h2>
+            <h2 className="text-3xl font-bold">Crunches: {training.crunches} / {training.totalNumberOfReps}</h2>
             <IncrementTypeOfTraining
               currentReps={training.crunches}
               maxReps={training.totalNumberOfReps}
