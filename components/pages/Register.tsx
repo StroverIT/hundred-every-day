@@ -7,7 +7,7 @@ import { signIn, getSession } from "next-auth/react";
 
 import { AiFillFacebook } from "react-icons/ai";
 import { usePathname, useRouter } from "next/navigation";
-import { register } from "../../API/server/authentication";
+import { register } from "@/API/server/authentication";
 
 export default function Register() {
   const router = useRouter();

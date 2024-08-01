@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import DatePicker from "@/components/DatePickerComp";
-import { getTraining, updateTraining } from "../../../API/server/training";
+import { getTraining, updateTraining } from "@/API/server/training";
 import moment from "moment";
 import {
   TrainingSchemaType,
