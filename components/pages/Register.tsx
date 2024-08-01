@@ -2,12 +2,10 @@
 import { useState } from "react";
 import ColorInput from "@/components/generic/ColorInput/ColorInput";
 
-import { toastError } from "@/components/notifications/Toast";
-import { signIn, getSession } from "next-auth/react";
-
-import { AiFillFacebook } from "react-icons/ai";
-import { usePathname, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { register } from "@/API/server/authentication";
+
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Register() {
   const router = useRouter();
@@ -29,17 +27,16 @@ export default function Register() {
     if (errorMessages.length > 0) return;
     //POST form values
     // @ts-ignore
-    const res = await register(inputs)
+    const res = await register(inputs);
 
     //Await for data for any desirable next steps
-    if(res.message){
-    await signIn("credentials", {
+    if (res.message) {
+      await signIn("credentials", {
         redirect: false,
         email: inputs.email,
         password: inputs.password,
       });
     }
-    
 
     // @ts-ignore
     if (res.errors) {
@@ -47,7 +44,6 @@ export default function Register() {
       setErrorMessages(res.errors);
     }
     setLoading(false);
-
 
     router.refresh();
     router.replace(pathname);
