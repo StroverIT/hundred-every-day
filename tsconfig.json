@@ -24,7 +24,7 @@
       "@/types/*": ["./types/*"],
       "@/api/*": ["./app/api/*"],
       "@/lib/*": ["./lib/*"],
-      "@/API/*": ["./API/*"],      
+      "@/API/*": ["apk/*"],      
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
