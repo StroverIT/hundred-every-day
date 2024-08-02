@@ -1,11 +1,7 @@
-import options from "@/api/auth/[...nextauth]/options";
 import Timer from "@/db/models/Timer";
 import { ObjectId } from "mongodb";
-import { getServerSession } from "next-auth";
 
-export const getTimer = async () => {
-  //@ts-ignore
-  const session = await getServerSession(options);
+export const getTimer = async (session: any) => {
   if(!session) return null;
   //@ts-ignore
   const { _id } = session?.token || {};
