@@ -8,16 +8,14 @@ export const dynamic = "force-dynamic";
 export default async function Page() {
   //@ts-ignore
   const session = await getServerSession(options);
-  console.log("test+++", session);
+
   if (!session) {
     redirect("/");
   }
 
-  return <div>Testvam samo</div>
-  // const timer = await getTimer();
+  const timer = await getTimer(session);
 
-  //@ts-ignore
-  // if(!session?.token) return <div>Зарежда се...</div>
+  return <div>test</div>
   //@ts-ignore
   // return <Index token={session?.token} timer={timer} />;
 }
