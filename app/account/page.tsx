@@ -15,7 +15,6 @@ export default async function Page() {
 
   const timer = await getTimer(session);
 
-  return <div>test</div>
   //@ts-ignore
-  // return <Index token={session?.token} timer={timer} />;
+  return <Index token={session?.token} timer={timer} />;
 }
