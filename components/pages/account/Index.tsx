@@ -22,6 +22,38 @@ export default function Index({ token }: { token: any }) {
     initial();
   }, [dateInput]);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      const run = async () => {
+        const register = await navigator.serviceWorker.register(
+          "/scripts/training-worker-notification.js"
+        );
+
+        const subscription = await register.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
+        });
+        if(subscription.endpoint){
+          await fetch("/api/schedule-daily", {
+            method: "POST",
+            body: JSON.stringify(subscription),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        }
+      };
+      if ('Notification' in window && 'serviceWorker' in navigator) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+          }
+        });
+      }
+      run();
+    }
+  }, []);
+
   const incrementHandler: IncrementHandlerType = async (
     incrementValue,
     type
@@ -39,7 +71,9 @@ export default function Index({ token }: { token: any }) {
       <div className="mt-4">
         <section className="flex flex-col gap-y-4 ">
           <article>
-            <h2 className="text-3xl font-bold">Push Ups: {training?.pushUps} / {training.totalNumberOfReps}</h2>
+            <h2 className="text-3xl font-bold">
+              Push Ups: {training?.pushUps} / {training.totalNumberOfReps}
+            </h2>
             <IncrementTypeOfTraining
               type={TypeOfExercise.pushUps}
               maxReps={training.totalNumberOfReps}
@@ -48,7 +82,9 @@ export default function Index({ token }: { token: any }) {
             />
           </article>
           <article>
-            <h2 className="text-3xl font-bold">Sit Ups: {training.sitUps} / {training.totalNumberOfReps}</h2>
+            <h2 className="text-3xl font-bold">
+              Sit Ups: {training.sitUps} / {training.totalNumberOfReps}
+            </h2>
             <IncrementTypeOfTraining
               currentReps={training.sitUps}
               maxReps={training.totalNumberOfReps}
@@ -57,7 +93,9 @@ export default function Index({ token }: { token: any }) {
             />
           </article>
           <article>
-            <h2 className="text-3xl font-bold">Crunches: {training.crunches} / {training.totalNumberOfReps}</h2>
+            <h2 className="text-3xl font-bold">
+              Crunches: {training.crunches} / {training.totalNumberOfReps}
+            </h2>
             <IncrementTypeOfTraining
               currentReps={training.crunches}
               maxReps={training.totalNumberOfReps}
