@@ -1,5 +1,4 @@
 import { TrainingSchemaType } from "@/types/schemas/TrainingTypes";
-import moment from "moment";
 import { Schema, model, models, Model } from "mongoose";
 
 const trainingSchema = new Schema<TrainingSchemaType>({

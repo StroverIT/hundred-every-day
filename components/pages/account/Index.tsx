@@ -9,10 +9,20 @@ import {
 } from "@/types/schemas/TrainingTypes";
 import IncrementTypeOfTraining from "@/components/training/IncrementTypeOfTraining/IncrementTypeOfTraining";
 import { IncrementHandlerType } from "@/components/training/IncrementTypeOfTraining/types";
+import ChangeDailyTimer from "./ChangeDailyTimer/ChangeDailyTimer";
+import { AddTimerType } from "./ChangeDailyTimer/types";
+import { IndexProps } from "./types";
+import { usePathname, useRouter } from "next/navigation";
 
-export default function Index({ token }: { token: any }) {
+export default function Index({ token, timer }: IndexProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
   const [training, setTraining] = useState<TrainingSchemaType | null>(null);
+
+  const [subscriptionState, setSubscriptionState] =
+    useState<PushSubscription | null>(null);
 
   useEffect(() => {
     const initial = async () => {
@@ -22,34 +32,48 @@ export default function Index({ token }: { token: any }) {
     initial();
   }, [dateInput]);
 
+  const addTimer: AddTimerType = async (subscription, timer = null) => {
+    if (subscription?.endpoint) {
+      await fetch("/api/schedule-daily", {
+        method: "POST",
+        body: JSON.stringify({ subscription, newTimer: timer }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      router.refresh();
+      router.push(pathname, { scroll: false });
+    }
+  };
+
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       const run = async () => {
-        const register = await navigator.serviceWorker.register(
-          "/scripts/training-worker-notification.js"
-        );
+        try {
+          const register = await navigator.serviceWorker.register(
+            "/scripts/training-worker-notification.js"
+          );
 
-        const subscription = await register.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
-        });
-        if(subscription.endpoint){
-          await fetch("/api/schedule-daily", {
-            method: "POST",
-            body: JSON.stringify(subscription),
-            headers: {
-              "Content-Type": "application/json",
-            },
+          const subscription = await register.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
           });
+          if (subscription.endpoint) {
+            await addTimer(subscription);
+            setSubscriptionState(subscription);
+          }
+          if ("Notification" in window && "serviceWorker" in navigator) {
+            Notification.requestPermission().then((permission) => {
+              if (permission === "granted") {
+                console.log("Notification permission granted.");
+              }
+            });
+          }
+        } catch (err) {
+          console.log(err);
         }
       };
-      if ('Notification' in window && 'serviceWorker' in navigator) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            console.log('Notification permission granted.');
-          }
-        });
-      }
+
       run();
     }
   }, []);
@@ -64,7 +88,7 @@ export default function Index({ token }: { token: any }) {
   };
 
   if (!training) return <div>Loading...</div>;
-
+  
   return (
     <div className="container">
       <DatePicker setDateInput={setDateInput} />
@@ -103,6 +127,15 @@ export default function Index({ token }: { token: any }) {
               incrementHandler={incrementHandler}
             />
           </article>
+          {!timer ? (
+            <div>Зарежда се....</div>
+          ) : (
+            <ChangeDailyTimer
+              subscriptionState={subscriptionState}
+              addTimer={addTimer}
+              timer={timer}
+            />
+          )}
         </section>
       </div>
     </div>

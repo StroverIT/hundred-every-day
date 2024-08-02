@@ -1,5 +1,5 @@
 self.addEventListener("push", (event) => {
-    console .log("Push received: ", event);
+    // console.log("push event", event);
     const data = event.data.json();
     const title = data.title;
     const body = data.body;
@@ -7,7 +7,7 @@ self.addEventListener("push", (event) => {
   
     const notificationOptions = {
       body: body,
-      tag: "training", // Use a unique tag to prevent duplicate notifications
+      tag: "training-notification", // Use a unique tag to prevent duplicate notifications
       icon: icon,
       data: {
         url: "/account", // Replace with the desired URL for redirecting user to the desired page
