@@ -3,10 +3,9 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import webPush from "web-push";
 import options from "@/api/auth/[...nextauth]/options";
-import Timer from "@/db/models/Timer";
-import { connectMongo } from "@/db/connectDb";
 import { ObjectId } from "mongodb";
 import Subscription from "@/db/models/Subscription";
+import { connectMongo } from "@/db/connectDb";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +16,10 @@ webPush.setVapidDetails(
 );
 
 export const GET = async (req: NextRequest) => {
-  
   // @ts-ignore
   const session = await getServerSession(options);  
+
+  await connectMongo()
   // @ts-ignore
   const subscriptionData = await Subscription.findOne({ userId: new ObjectId(session?.token._id) });
   
