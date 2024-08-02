@@ -9,24 +9,26 @@ import { ObjectId } from "mongodb";
 export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest) => {
-  try{
+  try {
     // @ts-ignore
-  const session = await getServerSession(options);
-  // @ts-ignore
-  const { _id } = session.token;
+    const session = await getServerSession(options);
+    // @ts-ignore
+    const { _id } = session.token;
 
-  const { subscription } = await req.json();
-  let subscriptionDBData = await Subscription.findOne({ userId: new ObjectId(_id) });
-  if(!subscriptionDBData) {
-    subscriptionDBData = new Subscription({
+    const { subscription } = await req.json();
+    let subscriptionDBData = await Subscription.findOne({
       userId: new ObjectId(_id),
-      subscription
     });
-    await subscriptionDBData.save();
-  }
-  }catch(e){
+    if (!subscriptionDBData) {
+      subscriptionDBData = new Subscription({
+        userId: new ObjectId(_id),
+        subscription,
+      });
+      await subscriptionDBData.save();
+    }
+  } catch (e) {
     console.log("Error in POST /api/schedule-daily", e);
   }
- 
+
   return NextResponse.json({ message: true });
 };
