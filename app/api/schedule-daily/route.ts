@@ -9,7 +9,8 @@ import { ObjectId } from "mongodb";
 export const dynamic = "force-dynamic";
 
 export const POST = async (req: NextRequest) => {
-  // @ts-ignore
+  try{
+    // @ts-ignore
   const session = await getServerSession(options);
   // @ts-ignore
   const { _id } = session.token;
@@ -22,6 +23,9 @@ export const POST = async (req: NextRequest) => {
       subscription
     });
     await subscriptionDBData.save();
+  }
+  }catch(e){
+    console.log("Error in POST /api/schedule-daily", e);
   }
  
   return NextResponse.json({ message: true });
