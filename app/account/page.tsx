@@ -13,8 +13,6 @@ export default async function Page() {
     redirect("/");
   }
 
-  const timer = await getTimer(session);
-
   //@ts-ignore
-  return <Index token={session?.token} timer={timer} />;
+  return <Index token={session?.token}/>;
 }

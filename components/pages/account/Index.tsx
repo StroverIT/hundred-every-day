@@ -14,7 +14,7 @@ import { AddTimerType } from "./ChangeDailyTimer/types";
 import { IndexProps } from "./types";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function Index({ token, timer }: IndexProps) {
+export default function Index({ token }: IndexProps) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -32,11 +32,11 @@ export default function Index({ token, timer }: IndexProps) {
     initial();
   }, [dateInput]);
 
-  const addTimer: AddTimerType = async (subscription, timer = null) => {
+  const addTimer: AddTimerType = async (subscription) => {
     if (subscription?.endpoint) {
       await fetch("/api/schedule-daily", {
         method: "POST",
-        body: JSON.stringify({ subscription, newTimer: timer }),
+        body: JSON.stringify({ subscription }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -127,15 +127,6 @@ export default function Index({ token, timer }: IndexProps) {
               incrementHandler={incrementHandler}
             />
           </article>
-          {!timer ? (
-            <div>Зарежда се....</div>
-          ) : (
-            <ChangeDailyTimer
-              subscriptionState={subscriptionState}
-              addTimer={addTimer}
-              timer={timer}
-            />
-          )}
         </section>
       </div>
     </div>
