@@ -18,7 +18,6 @@ export const GET = async (req: NextRequest) => {
   await connectMongo()
   // @ts-ignore
   const subscriptionArray = await Subscription.find()
-  console.log("cron subscriptionDB data", subscriptionArray)
   
   subscriptionArray.forEach(data=>{
     webPush
