@@ -15,5 +15,6 @@ export default async function Page() {
   }
 
   //@ts-ignore
+  if(!session?.token) return <div>Зарежда се...</div>
   return <Index token={session?.token} timer={timer} />;
 }
