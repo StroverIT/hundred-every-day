@@ -1,8 +1,6 @@
 // pages/api/schedule-daily.js
-import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import webPush from "web-push";
-import options from "@/api/auth/[...nextauth]/options";
 import { ObjectId } from "mongodb";
 import Subscription from "@/db/models/Subscription";
 import { connectMongo } from "@/db/connectDb";
@@ -17,24 +15,24 @@ webPush.setVapidDetails(
 
 export const GET = async (req: NextRequest) => {
   // @ts-ignore
-  const session = await getServerSession(options);  
 
   await connectMongo()
-  console.log("cron session", session)
   // @ts-ignore
-  const subscriptionData = await Subscription.findOne({ userId: new ObjectId(session?.token._id) });
-  console.log("cron subscriptionDB data", subscriptionData)
+  const subscriptionArray = await Subscription.find()
+  console.log("cron subscriptionDB data", subscriptionArray)
   
-  webPush
+  subscriptionArray.forEach(data=>{
+    webPush
         .sendNotification(
           // @ts-ignore
-          subscriptionData?.subscription,
+          data?.subscription,
           JSON.stringify({
             title: "Training",
             body: "Time to train!",
           })
         )
         .catch((err: any) => console.error(err));
+  })
 
   console.log({ message: "Daily notification scheduled successfully" });
   return NextResponse.json({ message: true });
