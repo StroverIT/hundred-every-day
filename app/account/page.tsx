@@ -11,7 +11,7 @@ export default async function Page() {
   if (!session) {
     redirect("/");
   }
-  
+
   //@ts-ignore
   return <Index token={session?.token} />;
 }
