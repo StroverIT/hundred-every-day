@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 export const getTimer = async () => {
   //@ts-ignore
   const session = await getServerSession(options);
+  if(!session) return null;
   //@ts-ignore
   const { _id } = session?.token || {};
   return Timer.findOne({userId: new ObjectId(_id)}).select("-_id -userId -__v").lean();

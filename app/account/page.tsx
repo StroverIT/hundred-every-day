@@ -8,11 +8,12 @@ export const dynamic = "force-dynamic";
 export default async function Page() {
   //@ts-ignore
   const session = await getServerSession(options);
-  const timer = await getTimer();
 
   if (!session) {
     redirect("/");
   }
+  
+  const timer = await getTimer();
 
   //@ts-ignore
   if(!session?.token) return <div>Зарежда се...</div>
