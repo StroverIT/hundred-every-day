@@ -20,8 +20,10 @@ export const GET = async (req: NextRequest) => {
   const session = await getServerSession(options);  
 
   await connectMongo()
+  console.log("cron session", session)
   // @ts-ignore
   const subscriptionData = await Subscription.findOne({ userId: new ObjectId(session?.token._id) });
+  console.log("cron subscriptionDB data", subscriptionData)
   
   webPush
         .sendNotification(
