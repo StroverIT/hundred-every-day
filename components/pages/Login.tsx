@@ -34,7 +34,9 @@ export default function Login() {
   const googleHandler = async (e: any) => {
     setGoogleLoading(true);
 
-    await signIn("google");
+    await signIn("google", {
+      redirect: false,
+    });
 
     setGoogleLoading(false);
   };
