@@ -1,7 +1,6 @@
 // pages/api/schedule-daily.js
 import { NextRequest, NextResponse } from "next/server";
 import webPush from "web-push";
-import { ObjectId } from "mongodb";
 import Subscription from "@/db/models/Subscription";
 import { connectMongo } from "@/db/connectDb";
 
@@ -29,6 +28,7 @@ export const GET = async (req: NextRequest) => {
           JSON.stringify({
             title: "Training",
             body: "Time to train!",
+            link: process.env.NEXTAUTH_URL as string
           })
         )
         .catch((err: any) => console.error(err));
