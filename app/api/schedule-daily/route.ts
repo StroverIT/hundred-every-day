@@ -22,12 +22,21 @@ export const POST = async (req: NextRequest) => {
     let subscriptionDBData = await Subscription.findOne({
       userId: new ObjectId(_id),
     });
+
+    if (subscriptionDBData) {
+      await Subscription.updateOne(
+        { userId: new ObjectId(_id) },
+        { subscription }
+      );
+      return NextResponse.json({ message: true });
+    }
     if (!subscriptionDBData) {
       subscriptionDBData = new Subscription({
         userId: new ObjectId(_id),
         subscription,
       });
       await subscriptionDBData.save();
+      return NextResponse.json({ message: true });
     }
   } catch (e) {
     console.log("Error in POST /api/schedule-daily", e);
