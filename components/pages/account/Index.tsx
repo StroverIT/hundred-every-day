@@ -50,25 +50,29 @@ export default function Index({ token }: IndexProps) {
     if ("serviceWorker" in navigator) {
       const run = async () => {
         try {
-          const register = await navigator.serviceWorker.register(
-            "/scripts/training-worker-notification.js",
-            { scope: "/account" }
-          );
+          const existingRegistration = await navigator.serviceWorker.getRegistration();
 
-          const subscription = await register.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
-          });
-          if (subscription.endpoint) {
-            await addTimer(subscription);
-            setSubscriptionState(subscription);
-          }
-          if ("Notification" in window && "serviceWorker" in navigator) {
-            Notification.requestPermission().then((permission) => {
-              if (permission === "granted") {
-                console.log("Notification permission granted.");
-              }
+          if(!existingRegistration){
+            const register = await navigator.serviceWorker.register(
+              "/scripts/training-worker-notification.js",
+              { scope: "/account" }
+            );
+  
+            const subscription = await register.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
             });
+            if (subscription.endpoint) {
+              await addTimer(subscription);
+              setSubscriptionState(subscription);
+            }
+            if ("Notification" in window && "serviceWorker" in navigator) {
+              Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                  console.log("Notification permission granted.");
+                }
+              });
+            }
           }
         } catch (err) {
           console.log(err);
