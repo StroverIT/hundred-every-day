@@ -27,7 +27,9 @@ export const GET = async (req: NextRequest) => {
           JSON.stringify({
             title: "Training",
             body: "Time to train!",
-            url: process.env.NEXTAUTH_URL as string
+            data: {
+              url: process.env.NEXTAUTH_URL as string
+            }
           })
         )
         .catch((err: any) => console.error(err));
