@@ -51,7 +51,8 @@ export default function Index({ token }: IndexProps) {
       const run = async () => {
         try {
           const register = await navigator.serviceWorker.register(
-            "/scripts/training-worker-notification.js"
+            "/scripts/training-worker-notification.js",
+            { scope: "/account" }
           );
 
           const subscription = await register.pushManager.subscribe({
@@ -88,7 +89,7 @@ export default function Index({ token }: IndexProps) {
   };
 
   if (!training) return <div>Loading...</div>;
-  
+
   return (
     <div className="container">
       <DatePicker setDateInput={setDateInput} />
