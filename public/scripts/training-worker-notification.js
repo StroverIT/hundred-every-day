@@ -7,7 +7,7 @@ self.addEventListener("activate", () => {
 });
 
 self.addEventListener("push", (event) => {
-  const data = event.data.json();
+  const data = event.data?.json();
   const { title, body } = data;
 
   event.waitUntil(
@@ -22,9 +22,11 @@ self.addEventListener("push", (event) => {
 });
 
 self.addEventListener("notificationclick", (event) => {
+  const notification = event.notification;
+
   event.notification.close(); // Close the notification
   // Open the desired URL
-  event.waitUntil(clients.openWindow(process.env.NEXT_PUBLIC_HOSTNAME));
+  event.waitUntil(clients.openWindow(notification?.data?.url));
 });
 
 const cacheName = "v1";
