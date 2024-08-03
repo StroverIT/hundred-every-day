@@ -55,7 +55,6 @@ export default function Index({ token }: IndexProps) {
           if(!existingRegistration){
             const register = await navigator.serviceWorker.register(
               "/scripts/training-worker-notification.js",
-              { scope: "/account" }
             );
   
             const subscription = await register.pushManager.subscribe({
