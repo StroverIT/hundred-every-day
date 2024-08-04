@@ -66,3 +66,22 @@ self.addEventListener("notificationclick", function (event) {
       })
   );
 });
+
+self.addEventListener('push', function(event) {
+  let data = {};
+  if (event.data) {
+    data = event.data.json();
+  }
+
+  const title = data.title || 'Default title';
+  const options = {
+    body: data.body || 'Default body',
+    data: {
+      link: data.url || 'https://localhost:3000',
+    }
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
