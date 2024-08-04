@@ -44,3 +44,37 @@ export const POST = async (req: NextRequest) => {
 
   return NextResponse.json({ message: true });
 };
+
+
+
+// pages/api/schedule-daily.js
+// import { getServerSession } from "next-auth";
+// import { NextRequest, NextResponse } from "next/server";
+
+// import options from "@/api/auth/[...nextauth]/options";
+// import Subscription from "@/db/models/Subscription";
+// import { ObjectId } from "mongodb";
+// import { connectMongo } from "@/db/connectDb";
+
+// export const dynamic = "force-dynamic";
+
+// export const POST = async (req: NextRequest) => {
+//   try {
+//     // @ts-ignore
+//     const session = await getServerSession(options);
+//     // @ts-ignore
+//     const { _id } = session.token;
+
+//     const { subscription } = await req.json();
+//     await connectMongo();
+
+//     // deleting just in case
+//     await Subscription.deleteMany({ userId: new ObjectId(_id) });
+
+//     await Subscription.create({ userId: new ObjectId(_id), subscription });
+//   } catch (e) {
+//     console.log("Error in POST /api/schedule-daily", e);
+//   }
+
+//   return NextResponse.json({ message: true });
+// };
