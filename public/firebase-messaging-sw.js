@@ -77,8 +77,11 @@ self.addEventListener('push', function(event) {
   const options = {
     body: data.body || 'Default body',
     data: {
-      link: data.url || 'https://localhost:3000',
-    }
+    link: data.url || 'https://localhost:3000',
+    },
+    // Add the following line to ensure the notification is displayed even when the device is in background
+    // This is achieved by setting the 'priority' property to 'high'
+    priority: 'high'
   };
 
   event.waitUntil(
