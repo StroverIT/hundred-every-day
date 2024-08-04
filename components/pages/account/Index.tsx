@@ -9,20 +9,14 @@ import {
 } from "@/types/schemas/TrainingTypes";
 import IncrementTypeOfTraining from "@/components/training/IncrementTypeOfTraining/IncrementTypeOfTraining";
 import { IncrementHandlerType } from "@/components/training/IncrementTypeOfTraining/types";
-import ChangeDailyTimer from "./ChangeDailyTimer/ChangeDailyTimer";
-import { AddTimerType } from "./ChangeDailyTimer/types";
 import { IndexProps } from "./types";
-import { usePathname, useRouter } from "next/navigation";
+import useFcmToken from "@/components/hooks/useFcmToken";
 
 export default function Index({ token }: IndexProps) {
-  const router = useRouter();
-  const pathname = usePathname();
 
   const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
   const [training, setTraining] = useState<TrainingSchemaType | null>(null);
-
-  const [subscriptionState, setSubscriptionState] =
-    useState<PushSubscription | null>(null);
+  const { token: fcmToken } = useFcmToken();
 
   useEffect(() => {
     const initial = async () => {
@@ -32,54 +26,25 @@ export default function Index({ token }: IndexProps) {
     initial();
   }, [dateInput]);
 
-  const addTimer: AddTimerType = async (subscription) => {
-    if (subscription?.endpoint) {
-      await fetch("/api/schedule-daily", {
-        method: "POST",
-        body: JSON.stringify({ subscription }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      router.refresh();
-      router.push(pathname, { scroll: false });
-    }
+  const addTimer = async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/send-notification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token: fcmToken,
+        title: "Test Notification",
+        message: "This is a test notification",
+        link: "/account",
+      }),
+    });
+
+    const data = await response.json();
   };
 
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      const run = async () => {
-        try {
-          const existingRegistration = await navigator.serviceWorker.getRegistration();
-
-          if(!existingRegistration){
-            const register = await navigator.serviceWorker.register(
-              "/scripts/training-worker-notification.js",
-            );
-  
-            const subscription = await register.pushManager.subscribe({
-              userVisibleOnly: true,
-              applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC,
-            });
-            if (subscription.endpoint) {
-              await addTimer(subscription);
-              setSubscriptionState(subscription);
-            }
-            if ("Notification" in window && "serviceWorker" in navigator) {
-              Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                  console.log("Notification permission granted.");
-                }
-              });
-            }
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      run();
-    }
+    addTimer();
   }, []);
 
   const incrementHandler: IncrementHandlerType = async (
