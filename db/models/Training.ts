@@ -1,27 +1,30 @@
 import { TrainingSchemaType } from "@/types/schemas/TrainingTypes";
 import { Schema, model, models, Model } from "mongoose";
 
+const trainingExcerciseSchema = new Schema({
+  totalNumberOfReps: {
+    type: Number,
+    required: true,
+  },
+  currentReps: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+});
+
 const trainingSchema = new Schema<TrainingSchemaType>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },
 
-  pushUps: {
-    type: Number,
-    required: true,
-  },
-  sitUps: {
-    type: Number,
-    required: true,
-  },
-  crunches: {
-    type: Number,
-    required: true,
-  },
+  pushUps: trainingExcerciseSchema,
+  sitUps: trainingExcerciseSchema,
+  crunches: trainingExcerciseSchema,
 
-  totalNumberOfReps: {
-    type: Number,
+  isRestDay: {
+    type: Boolean,
     required: true,
   },
 
