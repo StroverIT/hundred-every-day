@@ -43,9 +43,9 @@ export default function Index({ token }: IndexProps) {
     const data = await response.json();
   };
 
-  useEffect(() => {
-    addTimer();
-  }, []);
+  // useEffect(() => {
+  //   addTimer();
+  // }, []);
 
   const incrementHandler: IncrementHandlerType = async (
     incrementValue,
