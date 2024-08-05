@@ -52,7 +52,6 @@ export default function Index({ token }: IndexProps) {
 
   if (!training) return <div>Loading...</div>;
 
-  console.log(training);
   return (
     <div className="container">
       <DatePicker setDateInput={setDateInput} />
