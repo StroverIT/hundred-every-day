@@ -66,25 +66,3 @@ self.addEventListener("notificationclick", function (event) {
       })
   );
 });
-
-self.addEventListener('push', function(event) {
-  let data = {};
-  if (event.data) {
-    data = event.data.json();
-  }
-
-  const title = data.title || 'Default title';
-  const options = {
-    body: data.body || 'Default body',
-    data: {
-    link: data.url || 'https://localhost:3000',
-    },
-    // Add the following line to ensure the notification is displayed even when the device is in background
-    // This is achieved by setting the 'priority' property to 'high'
-    priority: 'high'
-  };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options)
-  );
-});
