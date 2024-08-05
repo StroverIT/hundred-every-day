@@ -2,6 +2,7 @@
 
 import { connectMongo } from "@/db/connectDb";
 import Training from "@/db/models/Training";
+import { DateWeekType } from "@/types/dates";
 import {
   TrainingSchemaType,
   TypeOfExercise,
@@ -13,47 +14,61 @@ import { ObjectId } from "mongodb";
 export const getTraining = async (token: any, date: string) => {
   await connectMongo();
 
-  const dateCreatedFormatted = moment(date).format("YYYY-MM-DD");
+  const dateCreated = moment(date)
+  const dateCreatedFormatted = dateCreated.format("YYYY-MM-DD");
+  const dateOfWeek = dateCreated.format("dddd")
 
   let training = (await Training.findOne({
     userId: new ObjectId(token._id),
     createdAt: dateCreatedFormatted,
   }).lean()) as TrainingSchemaType;
 
-  if (!training) training = await createTraining(token, dateCreatedFormatted);
+  const isRestDay = dateOfWeek === DateWeekType.Sunday
+  if (!training) training = await createTraining(token, dateCreatedFormatted, isRestDay);
 
-  return JSON.parse(JSON.stringify(training));
+  return JSON.parse(JSON.stringify({...training, isRestDay: isRestDay}));
 };
 
-export const createTraining = async (token: any, date: string) => {
+export const createTraining = async (token: any, date: string, isRestDay: boolean) => {
   await connectMongo();
 
-  let totalNumberOfReps = 100;
+  const totalNumberOfReps = {
+    pushUps: 100,
+    sitUps: 100,
+    crunches: 100,
+  }
   const prevDay = moment(date).subtract(1, "days").format("YYYY-MM-DD");
   const trainingPrevDay = (await Training.findOne({
     userId: new ObjectId(token._id),
     createdAt: prevDay,
   }).lean()) as TrainingSchemaType;
 
-  if (trainingPrevDay) {
-    const pushUps = 100 - trainingPrevDay.pushUps;
-    const sitUps = 100 - trainingPrevDay.sitUps;
-    const crunches = 100 - trainingPrevDay.crunches;
+  if (trainingPrevDay && !trainingPrevDay.isRestDay) {
+    const pushUps = trainingPrevDay.pushUps.totalNumberOfReps - trainingPrevDay.pushUps.currentReps;
+    const sitUps = trainingPrevDay.sitUps.totalNumberOfReps - trainingPrevDay.sitUps.currentReps;
+    const crunches = trainingPrevDay.crunches.totalNumberOfReps  - trainingPrevDay.crunches.currentReps;
 
-    const totalNumberOfRepsPrevDay = pushUps + sitUps + crunches;
+    if(pushUps > 0) totalNumberOfReps.pushUps += pushUps;
+    if(sitUps > 0) totalNumberOfReps.sitUps += sitUps;
+    if(crunches > 0) totalNumberOfReps.crunches += crunches;
     
-    if (totalNumberOfRepsPrevDay > 0) {
-      totalNumberOfReps += totalNumberOfRepsPrevDay;
-    }
   }
+
   const training = await Training.create({
     userId: new ObjectId(token._id),
-    pushUps: 0,
-    sitUps: 0,
-    crunches: 0,
-    totalNumberOfReps,
+    pushUps: {
+      totalNumberOfReps: totalNumberOfReps.pushUps
+    },
+    sitUps: {
+      totalNumberOfReps: totalNumberOfReps.sitUps
+    },
+    crunches: {
+      totalNumberOfReps: totalNumberOfReps.crunches
+    },
+    isRestDay,
     createdAt: date,
   });
+
   return JSON.parse(JSON.stringify(training));
 };
 
@@ -67,12 +82,15 @@ export const updateTraining = async (
 
   const dateCreatedFormatted = moment(date).format("YYYY-MM-DD");
 
-  await Training.updateOne(
+  const isUpdated = await Training.updateOne(
     { userId: new ObjectId(token._id), createdAt: dateCreatedFormatted },
     {
       $inc: {
-        [typeOfExercise]: value,
+        [`${typeOfExercise}.currentReps`]: value,
       },
     }
   );
+  
+  if(!isUpdated || isUpdated.modifiedCount === 0) throw new Error("Error updating training");
+  return isUpdated;
 };
