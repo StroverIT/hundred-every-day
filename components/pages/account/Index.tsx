@@ -13,7 +13,6 @@ import { IndexProps } from "./types";
 // import useFcmToken from "@/components/hooks/useFcmToken";
 
 export default function Index({ token }: IndexProps) {
-
   const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
   const [training, setTraining] = useState<TrainingSchemaType | null>(null);
   // const { token: fcmToken } = useFcmToken();
@@ -30,52 +29,80 @@ export default function Index({ token }: IndexProps) {
     incrementValue,
     type
   ) => {
-    await updateTraining(token, dateInput, type, incrementValue);
-    // @ts-ignore
-    setTraining((prev) => ({ ...prev, [type]: prev[type] + incrementValue }));
+    try {
+      // @ts-ignore
+      const updatedTraining = {
+        ...training,
+        [type]: {
+          // @ts-ignore
+          ...training[type],
+          // @ts-ignore
+          currentReps: training[type].currentReps + incrementValue,
+        },
+      };
+      // @ts-ignore
+      setTraining(updatedTraining);
+      await updateTraining(token, dateInput, type, incrementValue);
+    } catch (error) {
+      setTraining(training);
+    } finally {
+      return true;
+    }
   };
 
   if (!training) return <div>Loading...</div>;
 
+  console.log(training);
   return (
     <div className="container">
       <DatePicker setDateInput={setDateInput} />
       <div className="mt-4">
-        <section className="flex flex-col gap-y-4 ">
-          <article>
-            <h2 className="text-3xl font-bold">
-              Push Ups: {training?.pushUps} / {training.totalNumberOfReps}
-            </h2>
-            <IncrementTypeOfTraining
-              type={TypeOfExercise.pushUps}
-              maxReps={training.totalNumberOfReps}
-              currentReps={training.pushUps}
-              incrementHandler={incrementHandler}
-            />
-          </article>
-          <article>
-            <h2 className="text-3xl font-bold">
-              Sit Ups: {training.sitUps} / {training.totalNumberOfReps}
-            </h2>
-            <IncrementTypeOfTraining
-              currentReps={training.sitUps}
-              maxReps={training.totalNumberOfReps}
-              type={TypeOfExercise.sitUps}
-              incrementHandler={incrementHandler}
-            />
-          </article>
-          <article>
-            <h2 className="text-3xl font-bold">
-              Crunches: {training.crunches} / {training.totalNumberOfReps}
-            </h2>
-            <IncrementTypeOfTraining
-              currentReps={training.crunches}
-              maxReps={training.totalNumberOfReps}
-              type={TypeOfExercise.crunches}
-              incrementHandler={incrementHandler}
-            />
-          </article>
-        </section>
+        {!training.isRestDay ? (
+          <section className="flex flex-col gap-y-4 ">
+            <article>
+              <h2 className="text-3xl font-bold">
+                Push Ups: {training.pushUps.currentReps} /{" "}
+                {training.pushUps.totalNumberOfReps}
+              </h2>
+              <IncrementTypeOfTraining
+                type={TypeOfExercise.pushUps}
+                maxReps={training.pushUps.totalNumberOfReps}
+                currentReps={training.pushUps.currentReps}
+                incrementHandler={incrementHandler}
+              />
+            </article>
+            <article>
+              <h2 className="text-3xl font-bold">
+                Sit Ups: {training.sitUps.currentReps} /{" "}
+                {training.sitUps.totalNumberOfReps}
+              </h2>
+              <IncrementTypeOfTraining
+                currentReps={training.sitUps.currentReps}
+                maxReps={training.sitUps.totalNumberOfReps}
+                type={TypeOfExercise.sitUps}
+                incrementHandler={incrementHandler}
+              />
+            </article>
+            <article>
+              <h2 className="text-3xl font-bold">
+                Crunches: {training.crunches.currentReps} /{" "}
+                {training.crunches.totalNumberOfReps}
+              </h2>
+              <IncrementTypeOfTraining
+                currentReps={training.crunches.currentReps}
+                maxReps={training.crunches.totalNumberOfReps}
+                type={TypeOfExercise.crunches}
+                incrementHandler={incrementHandler}
+              />
+            </article>
+          </section>
+        ) : (
+          <h1 className="text-center font-semibold text-3xl">
+            Be happy and rest.
+            <br />
+            It&apos;s important for the muscles to grow
+          </h1>
+        )}
       </div>
     </div>
   );
