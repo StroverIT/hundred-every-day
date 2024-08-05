@@ -2,7 +2,6 @@ import { getServerSession } from "next-auth";
 import options from "@/api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
 import Index from "@/components/pages/account/Index";
-import { getTimer } from "@/API/server/timer";
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
