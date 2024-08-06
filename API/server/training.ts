@@ -37,11 +37,20 @@ export const createTraining = async (token: any, date: string, isRestDay: boolea
     sitUps: 100,
     crunches: 100,
   }
-  const prevDay = moment(date).subtract(1, "days").format("YYYY-MM-DD");
-  const trainingPrevDay = (await Training.findOne({
+  let prevDay = moment(date).subtract(1, "days").format("YYYY-MM-DD");
+
+  let trainingPrevDay = (await Training.findOne({
     userId: new ObjectId(token._id),
     createdAt: prevDay,
   }).lean()) as TrainingSchemaType;
+
+  if(trainingPrevDay?.isRestDay) {
+    prevDay = moment(date).subtract(2, "days").format("YYYY-MM-DD");
+    trainingPrevDay = (await Training.findOne({
+      userId: new ObjectId(token._id),
+      createdAt: prevDay,
+    }).lean()) as TrainingSchemaType;
+  }
 
   if (trainingPrevDay && !trainingPrevDay.isRestDay) {
     const pushUps = trainingPrevDay.pushUps.totalNumberOfReps - trainingPrevDay.pushUps.currentReps;
