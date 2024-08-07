@@ -13,7 +13,7 @@ export default function IncrementTypeOfTraining({
   }
 
   const handler = async (value: number) => {
-    return incrementHandler(value, type);
+     incrementHandler(value, type);
   };
 
   return (

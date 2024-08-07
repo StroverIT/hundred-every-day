@@ -45,9 +45,7 @@ export default function Index({ token }: IndexProps) {
       await updateTraining(token, dateInput, type, incrementValue);
     } catch (error) {
       setTraining(training);
-    } finally {
-      return true;
-    }
+    } 
   };
 
   if (!training) return <div>Loading...</div>;
