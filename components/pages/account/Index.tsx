@@ -10,12 +10,12 @@ import {
 import IncrementTypeOfTraining from "@/components/training/IncrementTypeOfTraining/IncrementTypeOfTraining";
 import { IncrementHandlerType } from "@/components/training/IncrementTypeOfTraining/types";
 import { IndexProps } from "./types";
-// import useFcmToken from "@/components/hooks/useFcmToken";
+import useFcmToken from "@/components/hooks/useFcmToken";
 
 export default function Index({ token }: IndexProps) {
   const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
   const [training, setTraining] = useState<TrainingSchemaType | null>(null);
-  // const { token: fcmToken } = useFcmToken();
+  const { token: fcmToken } = useFcmToken();
 
   useEffect(() => {
     const initial = async () => {
