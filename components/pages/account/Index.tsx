@@ -11,6 +11,7 @@ import IncrementTypeOfTraining from "@/components/training/IncrementTypeOfTraini
 import { IncrementHandlerType } from "@/components/training/IncrementTypeOfTraining/types";
 import { IndexProps } from "./types";
 import useFcmToken from "@/components/hooks/useFcmToken";
+import Container from "./Container";
 
 export default function Index({ token }: IndexProps) {
   const [dateInput, setDateInput] = useState(moment().format("YYYY-MM-DD"));
@@ -56,42 +57,27 @@ export default function Index({ token }: IndexProps) {
       <div className="mt-4">
         {!training.isRestDay ? (
           <section className="flex flex-col gap-y-4 ">
-            <article>
-              <h2 className="text-3xl font-bold">
-                Push Ups: {training.pushUps.currentReps} /{" "}
-                {training.pushUps.totalNumberOfReps}
-              </h2>
-              <IncrementTypeOfTraining
-                type={TypeOfExercise.pushUps}
-                maxReps={training.pushUps.totalNumberOfReps}
-                currentReps={training.pushUps.currentReps}
-                incrementHandler={incrementHandler}
-              />
-            </article>
-            <article>
-              <h2 className="text-3xl font-bold">
-                Sit Ups: {training.sitUps.currentReps} /{" "}
-                {training.sitUps.totalNumberOfReps}
-              </h2>
-              <IncrementTypeOfTraining
-                currentReps={training.sitUps.currentReps}
-                maxReps={training.sitUps.totalNumberOfReps}
-                type={TypeOfExercise.sitUps}
-                incrementHandler={incrementHandler}
-              />
-            </article>
-            <article>
-              <h2 className="text-3xl font-bold">
-                Crunches: {training.crunches.currentReps} /{" "}
-                {training.crunches.totalNumberOfReps}
-              </h2>
-              <IncrementTypeOfTraining
-                currentReps={training.crunches.currentReps}
-                maxReps={training.crunches.totalNumberOfReps}
-                type={TypeOfExercise.crunches}
-                incrementHandler={incrementHandler}
-              />
-            </article>
+            <Container 
+              currentReps={training.pushUps.currentReps}
+              totalNumberOfReps={training.pushUps.totalNumberOfReps}
+              incrementHandler={incrementHandler}
+              type={TypeOfExercise.pushUps}
+              title="Push Ups"
+            />
+            <Container
+              currentReps={training.sitUps.currentReps}
+              totalNumberOfReps={training.sitUps.totalNumberOfReps}
+              incrementHandler={incrementHandler}
+              type={TypeOfExercise.sitUps} 
+              title="Sit Ups"
+            />
+            <Container
+              currentReps={training.crunches.currentReps}
+              totalNumberOfReps={training.crunches.totalNumberOfReps}
+              incrementHandler={incrementHandler}
+              type={TypeOfExercise.crunches}
+              title="Crunches"
+            />
           </section>
         ) : (
           <h1 className="text-center font-semibold text-3xl">
